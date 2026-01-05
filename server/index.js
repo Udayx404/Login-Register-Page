@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express")
 const cors = require("cors")
 const mongoose = require("mongoose")
@@ -5,6 +6,7 @@ const UserModel = require("./models/User")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const cookieParser = require("cookie-parser")
+const {PASSWORD} = process.env
 
 const app = express()
 app.use(express.json())
@@ -15,7 +17,7 @@ app.use(cors({
 }))
 app.use(cookieParser())
 
-mongoose.connect("mongodb+srv://kudayk186_db_user:4cO9vS6QFV9JI6Sp@cluster0.ko0wvtj.mongodb.net/")
+mongoose.connect(`mongodb+srv://kudayk186_db_user:${process.env.PASSWORD}@cluster0.ko0wvtj.mongodb.net/`)
 
 const verifyUser = (req,res,next) =>{
     const token = req.cookies.token
