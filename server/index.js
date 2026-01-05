@@ -6,7 +6,7 @@ const UserModel = require("./models/User")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const cookieParser = require("cookie-parser")
-const {PASSWORD} = process.env
+const {PASSWORD, JWT_SECRET_KEY} = process.env
 
 const app = express()
 app.use(express.json())
@@ -25,7 +25,7 @@ const verifyUser = (req,res,next) =>{
         return res.json("Token not available!")
     }
     else{
-        jwt.verify(token, "jwt-secret-key", (err, decoded)=>{
+        jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded)=>{
             if(err) return res.json("Invalid token!")
             next()
         })
@@ -43,7 +43,7 @@ app.post("/login", (req,res)=>{
         if(user){
             bcrypt.compare(password, user.password, (err, response)=>{
                 if(response){
-                    const token = jwt.sign({email: user.email}, "jwt-secret-key", {expiresIn:"1d"})
+                    const token = jwt.sign({email: user.email}, process.env.JWT_SECRET_KEY, {expiresIn:"1d"})
                     res.cookie("token", token, {
                         httpOnly: true,
                         secure: false,
